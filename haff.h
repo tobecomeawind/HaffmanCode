@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
 
@@ -25,7 +26,7 @@ leaf * leaf_init    (char);
 leaf** bininsert    (leaf**, char, int*);
 leaf** bufalloc     (leaf**, int *);
 void   qsortt       (leaf**, int , int);
-void   print_leavies(leaf**, int);
+void   print_table  (leaf**, int);
 
 leaf_buf* analyze_file(char []);
 

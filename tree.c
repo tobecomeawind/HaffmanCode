@@ -1,8 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "haff.h"
 #include "tree.h"
-
 
 node* init_node(leaf* lp, node* left, node* right)
 {
@@ -17,6 +14,22 @@ node* init_node(leaf* lp, node* left, node* right)
 
 	return nptr;	
 }
+
+void destruct_tree(node* head)
+{
+		
+	if(head->lp){
+		free(head->lp);	
+		free(head);
+		return;
+	}
+			
+	destruct_tree(head->left);
+	destruct_tree(head->right);
+
+	free(head);
+}
+
 
 node* create_tree(leaf** buf, int size)
 {
@@ -43,7 +56,6 @@ node* create_tree(leaf** buf, int size)
 
 	lhead = init_node(NULL, lhead, rhead);
 
-	//return top;
 	return lhead;
 }
 
@@ -58,7 +70,6 @@ void create_table(node* head, int len, uint32_t code)
 	code <<= 1;
 
 	create_table(head->left, ++len, code);	
-	//code |= 1 << (len - 1);
 	code |= 1;
 	
 	create_table(head->right, len, code);
@@ -79,7 +90,7 @@ void encode(char* filename, node* head, leaf** buf, int size)
 	qsorttt(buf, 0 , size - 1);	
 	
 	tencode("example.txt", head);
-	
+
 	fp  = fopen(filename,      "rb");
 	nfp = fopen("example.txt", "awb");	
 
@@ -117,10 +128,10 @@ void fencode(FILE*    fp,      FILE* nfp,  //file pointers to get(fp) and put by
 	leaf* binsearch(leaf** buf, char target, int size);
 
 	char c;
-	int total_bits = 0;
+	int  total_bits = 0;
 
-	leaf*   var;
-	int     lcode;
+	leaf*    var;
+	int      lcode;
 	uint32_t code;
 		
 	uint32_t mbit = 0;
@@ -148,7 +159,7 @@ void fencode(FILE*    fp,      FILE* nfp,  //file pointers to get(fp) and put by
 						
 		} else if (lcode > iblen){	
 
-			ibit |= (code) >> (lcode - iblen); //17 - 8 = 9
+			ibit |= (code) >> (lcode - iblen);
 										
 			lcode -= iblen;		
 			for (int i = 0; i < lcode; i++)
@@ -178,7 +189,6 @@ void fencode(FILE*    fp,      FILE* nfp,  //file pointers to get(fp) and put by
 	}
 }
 
-
 void serialization_tree(node* head, FILE* fp)
 {
 	uint8_t data = NODEWP;	
@@ -198,30 +208,6 @@ void serialization_tree(node* head, FILE* fp)
 
 	serialization_tree(head->left,  fp);	
 	serialization_tree(head->right, fp);	
-}
-
-void desirialization_tree(node* head, FILE* fp)//можно сэкономить место если в один байт впихивать 2 прохождения дерева
-											   //вместо 11111001
-											   //       1011 1100
-{
-	char c;
-
-	if((c = fgetc(fp)) == END){
-		return;
-	}
-
-	if((c & isLEAF) == isLEAF){
-		head->lp = leaf_init(fgetc(fp));
-		return;
-	}	
-
-	if((c & LEFT) == LEFT)
-		head->left  = init_node(NULL, NULL, NULL);	
-	if((c & RIGHT) == RIGHT)
-		head->right = init_node(NULL, NULL, NULL);	
-
-	desirialization_tree(head->left,  fp);
-	desirialization_tree(head->right, fp);
 }
 
 void qsorttt(leaf** buf, int left, int right)
@@ -248,12 +234,10 @@ void qsorttt(leaf** buf, int left, int right)
 }
 
 void swap(leaf** buf, int i, int j)
-{
-	leaf* var;
-			
-	var	   = buf[i];
-	buf[i] = buf[j];
-	buf[j] = var; 
+{	
+	leaf* var = buf[i];
+	buf[i]    = buf[j];
+	buf[j]    = var; 
 }
 
 leaf* binsearch(leaf** buf, char target, int size)

@@ -28,15 +28,15 @@ int main(int argc, char *argv[])
 	top = create_tree(buf, size);
 	
 	create_table(top, 0, 0);
-	print_leavies(buf, size);
+	print_table(buf, size);
 	encode(filename, top, buf, size);
 
 	decode("example.txt");
+	
+	destruct_tree(top);	
 
-	//print_leavies(buf, size);
-
-	//binary_view(filename);
-	//binary_view("example.txt");
-
+	free(buf);
+	free(bp);
+	
 	return 0;	
 }

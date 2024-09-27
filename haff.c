@@ -1,7 +1,5 @@
-#include <stdio.h>
 #include "haff.h"
 
-//extern leaf* leaf_init(char);
 
 leaf * leaf_init(char let)
 {
@@ -23,54 +21,60 @@ leaf_buf* analyze_file(char name[])
 	leaf **lbuf;
 	int sizebuf, start_bits = 0;
 	
-	lbuf = (leaf**) malloc(sizeof(leaf*));//lbuf указатель на массив указателей leaf	
-	
 	fp = fopen(name, "r");
 
-	if((c = getc(fp)) != EOF){
-		lbuf[0] = leaf_init(c);
-		sizebuf = 1;	
-		lbuf = bufalloc(lbuf, &sizebuf);
+	lbuf = (leaf**) malloc(sizeof(leaf*));
+
+	if((c = getc(fp)) == EOF){
+		printf("\n ERROR: !Not enough data! \n");	
 	}
 
+	sizebuf = 1;	
+	lbuf = bufalloc(lbuf, &sizebuf);	
+	lbuf[0] = leaf_init(c);
+	
 	putchar('\n');
 	while((c = getc(fp)) != EOF){
 		start_bits += 8;
-	
-		//printf(" %b ", c);
-
 		lbuf = bininsert(lbuf, c, &sizebuf);				
 	}		
 	putchar('\n');
 
-	printf("Start Bits: %i", start_bits);
+	printf("Start Bits: %i, Bytes: %i", start_bits, start_bits / 8);
 
 	qsortt(lbuf, 0, sizebuf - 1);
 
 	//free(lbuf);
 	fclose(fp);
 
-	leaf_buf* ilbuf = (leaf_buf*) malloc(sizeof(leaf_buf*));//info leaf buf - ilbuf 
+	leaf_buf* ilbuf = (leaf_buf*) malloc(sizeof(leaf_buf*));
 	ilbuf->size = sizebuf;
 	ilbuf->buf  = lbuf;
 
 	return ilbuf;
 }
 
-void print_leavies(leaf** leavies, int sizebuf)
-{	
+void print_table(leaf** leavies, int sizebuf)
+{		
+	leaf* var;	
+	
 	putchar('\n');
-	for(int i = 0; i < sizebuf; i++)
-		printf("|  %3i || ASCII: %4i | Letter: %4c | Count: %5i | Code: %32.*b| CodeD: %10d | Lentgh: %5i || %3i  |\n",
+	printf("\n______________________________________________________________________________\n");
+	printf("| N || ASCII | Count | Letter |             Code               | Lenght || N |\n");
+	printf("|---||-------|-------|--------|--------------------------------|--------||---|\n");
+	for(int i = 0; i < sizebuf; i++){
+		var = leavies[i];			
+		printf("|%3i||  %4i | %5i |   %4c |%32.*b|  %5i ||%3i|\n",
 				i + 1,	
-				leavies[i]->letter,	
-				(leavies[i]->letter > 32 && leavies[i]->letter < 120) ? leavies[i]->letter : 78,  
-				leavies[i]->count,
-				leavies[i]->lcode % 8,
-				leavies[i]->code,
-				leavies[i]->code,
-				leavies[i]->lcode,
+				var->letter,
+				var->count,	
+				(var->letter > 32 && var->letter < 120) ? var->letter : 78,  
+				var->lcode % 8,
+				var->code,
+				var->lcode,
 				i + 1);
+	}	
+	printf("------------------------------------------------------------------------------\n");
 	putchar('\n');
 }
 
@@ -98,7 +102,6 @@ leaf** bininsert(leaf** buf, char let, int* size)
 
 	lp = leaf_init(let);
 
-	//buf = (leaf**) realloc(buf, (++*size) * sizeof(leaf*));
 	++*size;	
 	buf = bufalloc(buf, size);
 
@@ -119,7 +122,6 @@ leaf** bufalloc(leaf** buf, int *size)
 
 	for(int i = 0; i < *size; i++){
 		pt[i] = buf[i];
-		//free(buf[i]);
 	}	
 	
 	free(buf);	

@@ -9,6 +9,33 @@
 
 #define ON 0b10000000 // to check the first bit on/off to get the path on - right(1), off - left(0)
 
+
+
+void desirialization_tree(node* head, FILE* fp)//можно сэкономить место если в один байт впихивать 2 прохождения дерева
+											   //вместо 11111001
+											   //       1011 1100
+{
+	char c;
+
+	if((c = fgetc(fp)) == END){
+		return;
+	}
+
+	if((c & isLEAF) == isLEAF){
+		head->lp = leaf_init(fgetc(fp));
+		return;
+	}	
+
+	if((c & LEFT) == LEFT)
+		head->left  = init_node(NULL, NULL, NULL);	
+	if((c & RIGHT) == RIGHT)
+		head->right = init_node(NULL, NULL, NULL);	
+
+	desirialization_tree(head->left,  fp);
+	desirialization_tree(head->right, fp);
+}
+
+
 void decode(char* filename)
 {
 	FILE* fp;
@@ -42,5 +69,6 @@ void decode(char* filename)
 	putchar('\n');
 
 	fclose(fp);
+	destruct_tree(top);
 	return;	
 }

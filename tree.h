@@ -24,10 +24,9 @@ typedef struct node{
 } node;
 
 
-void  create_table(node* , int   , uint32_t);
-node* init_node   (leaf* , node* , node*);
-node* create_tree (leaf**, int);
-void  encode      (char* , node* , leaf**, int);
-
-void desirialization_tree(node* head, FILE* fp);
+void  create_table (node* , int   , uint32_t);
+node* init_node    (leaf* , node* , node*);
+node* create_tree  (leaf**, int);
+void  encode       (char* , node* , leaf**, int);
+void  destruct_tree(node*);
 #endif
