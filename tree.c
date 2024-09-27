@@ -1,5 +1,6 @@
 #include "haff.h"
 #include "tree.h"
+#include "algs.h"
 
 node* init_node(leaf* lp, node* left, node* right)
 {
@@ -78,7 +79,6 @@ void create_table(node* head, int len, uint32_t code)
 
 void encode(char* filename, node* head, leaf** buf, int size)
 {
-	void qsorttt(leaf** buf, int left, int right);
 	void fencode(FILE* fp, FILE* nfp,
 		   	     uint8_t ibit, int iblen,
 				 uint32_t rbyte, int rblen,
@@ -87,12 +87,14 @@ void encode(char* filename, node* head, leaf** buf, int size)
 	FILE* fp;
 	FILE* nfp;
 
-	qsorttt(buf, 0 , size - 1);	
+	int (*func)(leaf* ,leaf*) = &compare_alph;
+
+	qsortt(buf, 0 , size - 1, func);	
 	
 	tencode("example.txt", head);
 
 	fp  = fopen(filename,      "rb");
-	nfp = fopen("example.txt", "awb");	
+	nfp = fopen("example.txt", "awb");	//go to end
 
 	fencode(fp, nfp, 0, 8, 0, 32, buf, size);
 
@@ -128,7 +130,6 @@ void fencode(FILE*    fp,      FILE* nfp,  //file pointers to get(fp) and put by
 	leaf* binsearch(leaf** buf, char target, int size);
 
 	char c;
-	int  total_bits = 0;
 
 	leaf*    var;
 	int      lcode;
@@ -140,13 +141,11 @@ void fencode(FILE*    fp,      FILE* nfp,  //file pointers to get(fp) and put by
 
 		if(rblen == 32 && (c = fgetc(fp)) == EOF){
 			fputc(c, nfp);
-			total_bits += 8;
 
-			printf("\n--Total bits: %i--\n", total_bits);
 			return;
 		}		
 
-		var   = (rblen != 32) ? NULL : binsearch(buf, c, size);			
+		var   = (rblen != 32) ?  NULL : binsearch(buf, c, size);			
 		lcode = (rblen != 32) ? rblen : var->lcode; 
 		code  = (rblen != 32) ? rbyte : var->code;	
 		
@@ -169,7 +168,6 @@ void fencode(FILE*    fp,      FILE* nfp,  //file pointers to get(fp) and put by
 			rblen = lcode;	
 
 			fputc(ibit, nfp);
-			total_bits += 8;
 			ibit  = 0;	
 			iblen = 8;
 
@@ -178,7 +176,6 @@ void fencode(FILE*    fp,      FILE* nfp,  //file pointers to get(fp) and put by
 			ibit |= code; 	
 
 			fputc(ibit, nfp);	
-			total_bits += 8;
 
 			ibit  = 0;
 			iblen = 8;
@@ -210,54 +207,11 @@ void serialization_tree(node* head, FILE* fp)
 	serialization_tree(head->right, fp);	
 }
 
-void qsorttt(leaf** buf, int left, int right)
+
+int compare_alph(leaf* a, leaf* b)
 {
-	void swap(leaf** buf,int i ,int j);	
-	int pivot;
-
-	if(left >= right)
-		return;
-
-	swap(buf, left, (left + right) / 2);
-	pivot = left;
-
-	for(int i = left + 1; i <= right; i++){
-		if(buf[left]->letter > buf[i]->letter){
-			swap(buf, ++pivot, i);	
-		}
-	}	
-
-	swap(buf, left, pivot);
-
-	qsorttt(buf, left, pivot - 1);
-	qsorttt(buf, pivot + 1, right);
+	if(a->letter < b->letter)	
+		return 1;
+	else
+		return 0;
 }
-
-void swap(leaf** buf, int i, int j)
-{	
-	leaf* var = buf[i];
-	buf[i]    = buf[j];
-	buf[j]    = var; 
-}
-
-leaf* binsearch(leaf** buf, char target, int size)
-{
-	int low, high, mid;
-
-	low  = 0;
-	high = size - 1;
-
-	while(low <= high){
-		mid    = (low + high) / 2; 
-
-		if (target > buf[mid]->letter)// go to right
-			low  = mid + 1;
-		else if (target < buf[mid]->letter) // go to left
-			high = mid - 1;	
-		else
-			return buf[mid];
-	}
-	
-	return 0;
-}
-

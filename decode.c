@@ -1,6 +1,6 @@
-#include <stdio.h>
-#include <stdint.h>
-#include <stdlib.h>
+//#include <stdio.h>
+//#include <stdint.h>
+//#include <stdlib.h>
 
 #include "haff.h"// так как tree.h зависит от haff.h, они имеют такой орядок включения
 #include "tree.h"

@@ -1,8 +1,10 @@
 #include "haff.h"
 #include "tree.h"
 #include "decode.h"
+#include <sys/stat.h>
 
 #include <stdio.h>
+
 
 int main(int argc, char *argv[])
 {
@@ -12,7 +14,9 @@ int main(int argc, char *argv[])
 	leaf** buf;
 	leaf_buf* bp;
 	node* top;
-	int size;
+	int size; 
+	long int fisize, fosize;//input file size, output file size
+	struct stat fi, fo;
 
 	if(argc == 2)
 		filename = *++argv;
@@ -34,6 +38,16 @@ int main(int argc, char *argv[])
 	decode("example.txt");
 	
 	destruct_tree(top);	
+
+	stat(filename,      &fi);	
+	stat("example.txt", &fo);	
+	
+	fisize = fi.st_size;
+	fosize = fo.st_size;
+
+	printf("\nInput file size bytes: %li\n",  fisize);
+	printf("\nOutput file size bytes: %li\n", fosize);
+	printf("\nCompression coefficent: %f\n", (float)fisize / fosize);
 
 	free(buf);
 	free(bp);

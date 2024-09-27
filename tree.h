@@ -23,6 +23,7 @@ typedef struct node{
 
 } node;
 
+int   compare_alph (leaf* , leaf*);
 
 void  create_table (node* , int   , uint32_t);
 node* init_node    (leaf* , node* , node*);

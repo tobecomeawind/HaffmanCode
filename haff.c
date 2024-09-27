@@ -1,7 +1,7 @@
 #include "haff.h"
+#include "algs.h"
 
-
-leaf * leaf_init(char let)
+leaf* leaf_init(char let)
 {
 	leaf *p;
 
@@ -20,7 +20,9 @@ leaf_buf* analyze_file(char name[])
 	char c;
 	leaf **lbuf;
 	int sizebuf, start_bits = 0;
-	
+
+	int (*func)(leaf* , leaf*) = &compare_count;
+
 	fp = fopen(name, "r");
 
 	lbuf = (leaf**) malloc(sizeof(leaf*));
@@ -35,16 +37,13 @@ leaf_buf* analyze_file(char name[])
 	
 	putchar('\n');
 	while((c = getc(fp)) != EOF){
-		start_bits += 8;
 		lbuf = bininsert(lbuf, c, &sizebuf);				
 	}		
 	putchar('\n');
 
-	printf("Start Bits: %i, Bytes: %i", start_bits, start_bits / 8);
 
-	qsortt(lbuf, 0, sizebuf - 1);
+	qsortt(lbuf, 0, sizebuf - 1, func);
 
-	//free(lbuf);
 	fclose(fp);
 
 	leaf_buf* ilbuf = (leaf_buf*) malloc(sizeof(leaf_buf*));
@@ -78,6 +77,7 @@ void print_table(leaf** leavies, int sizebuf)
 	putchar('\n');
 }
 
+/*
 leaf** bininsert(leaf** buf, char let, int* size)
 {
 	int low, high, mid, midres;
@@ -113,6 +113,7 @@ leaf** bininsert(leaf** buf, char let, int* size)
 		
 	return buf;	
 }
+*/
 
 leaf** bufalloc(leaf** buf, int *size)
 {
@@ -129,15 +130,24 @@ leaf** bufalloc(leaf** buf, int *size)
 	return pt;
 }
 
-
+/*
 void swapp(leaf** buf, int i, int j)
 {
 	leaf* var = buf[i];
 	buf[i] = buf[j];
 	buf[j] = var;
 }
+*/
 
+int compare_count(leaf* a, leaf* b)
+{
+	if(a->count < b->count)	
+		return 1;
+	else
+		return 0;
+}
 
+/*
 void qsortt(leaf** buf, int low, int high)
 {
 	int last;
@@ -157,4 +167,4 @@ void qsortt(leaf** buf, int low, int high)
 	qsortt(buf, low, last - 1);
 	qsortt(buf, last + 1, high);
 }
-
+*/

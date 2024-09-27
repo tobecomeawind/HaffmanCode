@@ -21,11 +21,12 @@ typedef struct {
 
 } leaf_buf;
 
+int compare_count   (leaf*,  leaf*);
 
 leaf * leaf_init    (char);
 leaf** bininsert    (leaf**, char, int*);
 leaf** bufalloc     (leaf**, int *);
-void   qsortt       (leaf**, int , int);
+
 void   print_table  (leaf**, int);
 
 leaf_buf* analyze_file(char []);
