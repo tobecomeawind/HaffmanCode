@@ -1,4 +1,4 @@
 gcc src/*.c -I ./include -o main
 
 
-./main <input file>
+./main "input file"
