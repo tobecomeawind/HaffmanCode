@@ -1,9 +1,14 @@
-#include "haff.h"
-#include "tree.h"
+#include "analyzer.h"
+#include "encoder.h"
 #include "algs.h"
 
 void qsortt(leaf** buf, int left, int right, int (*func)(leaf* a, leaf* b))
 {
+			
+	/***************************\
+   |    Basic qsort with func    |
+ 	\***************************/
+	
 	void swap(leaf** buf, int i, int j);	
 	int pivot;
 
@@ -34,6 +39,11 @@ void swap(leaf** buf, int i, int j)
 
 leaf* binsearch(leaf** buf, char target, int size)
 {
+			
+ 	/***************************\
+   |      Basic binsearch        |
+	\***************************/
+	
 	int low, high, mid;
 
 	low  = 0;
@@ -56,6 +66,12 @@ leaf* binsearch(leaf** buf, char target, int size)
 
 leaf** bininsert(leaf** buf, char let, int* size)
 {
+			
+ 	 /***************************\
+	| Searching a insert position |
+	|      with binsearch         |
+	 \***************************/
+	
 	int low, high, mid, midres;
 	leaf *lp;
 
@@ -79,9 +95,11 @@ leaf** bininsert(leaf** buf, char let, int* size)
 
 	lp = leaf_init(let);
 
-	++*size;	
+	++*size;
+	//realloc data	
 	buf = bufalloc(buf, size);
-
+	
+	//shift data
 	for(int i = *size; i > low; i--){
 		buf[i] = buf[i - 1];	
 	}	
@@ -89,5 +107,4 @@ leaf** bininsert(leaf** buf, char let, int* size)
 	buf[low] = lp;
 		
 	return buf;	
-
 }

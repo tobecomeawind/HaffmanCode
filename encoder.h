@@ -4,6 +4,8 @@
 #ifndef TREE_H
 #define TREE_H
 
+//Binary view tree
+//serialization
 #define NODEWP 0b11111000 //node without params
 #define RIGHT  0b00000001 //is node->right
 #define LEFT   0b00000010 //is node->left

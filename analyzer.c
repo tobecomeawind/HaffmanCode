@@ -1,8 +1,13 @@
-#include "haff.h"
+#include "analyzer.h"
 #include "algs.h"
 
 leaf* leaf_init(char let)
 {
+	 /**********************\
+	|Constructor of structure|
+	|         leaf           |
+	 \**********************/	
+	
 	leaf *p;
 
 	p = malloc(sizeof(leaf));
@@ -15,34 +20,32 @@ leaf* leaf_init(char let)
 }
 
 leaf_buf* analyze_file(char name[])
-{	
+{		
+	 /**********************\
+	|    Analyzer of file    |
+	 \**********************/	
+	
 	FILE *fp;
 	char c;
-	leaf **lbuf;
-	int sizebuf, start_bits = 0;
+	leaf **lbuf; //leavies buf
+	int sizebuf = 1;
 
+	//sorting by count letter in text
 	int (*func)(leaf* , leaf*) = &compare_count;
 
 	fp = fopen(name, "r");
 
 	lbuf = (leaf**) malloc(sizeof(leaf*));
-
-	if((c = getc(fp)) == EOF){
-		printf("\n ERROR: !Not enough data! \n");	
-	}
-
-	sizebuf = 1;	
+	
 	lbuf = bufalloc(lbuf, &sizebuf);	
 	lbuf[0] = leaf_init(c);
 	
-	putchar('\n');
 	while((c = getc(fp)) != EOF){
-		lbuf = bininsert(lbuf, c, &sizebuf);				
+		lbuf = bininsert(lbuf, c, &sizebuf);// searching by alphabet
+											// and insert
 	}		
-	putchar('\n');
 
-
-	qsortt(lbuf, 0, sizebuf - 1, func);
+	qsortt(lbuf, 0, sizebuf - 1, func); // sort by count
 
 	fclose(fp);
 
@@ -77,46 +80,13 @@ void print_table(leaf** leavies, int sizebuf)
 	putchar('\n');
 }
 
-/*
-leaf** bininsert(leaf** buf, char let, int* size)
-{
-	int low, high, mid, midres;
-	leaf *lp;
-
-	low  = 0;
-	high = *size - 1;
-
-	while(low <= high){
-		mid  = (low + high)/2; 
-		midres = buf[mid]->letter - let;	
-		
-		if(midres > 0){//go to left
-			high = mid - 1;		
-		}else if(midres < 0){
-			low = mid + 1;//go to right or equal
-		}else{
-			buf[mid]->count++;
-			return buf;		
-		}
-	}
-
-	lp = leaf_init(let);
-
-	++*size;	
-	buf = bufalloc(buf, size);
-
-	for(int i = *size; i > low; i--){
-		buf[i] = buf[i - 1];	
-	}	
-		
-	buf[low] = lp;
-		
-	return buf;	
-}
-*/
 
 leaf** bufalloc(leaf** buf, int *size)
-{
+{	
+	 /**********************\
+	|    Reallocator bufs    |
+	 \**********************/	
+	
 	leaf **pt;	
 	
 	pt = (leaf**) malloc((*size + 1) * sizeof(leaf*));
@@ -130,41 +100,13 @@ leaf** bufalloc(leaf** buf, int *size)
 	return pt;
 }
 
-/*
-void swapp(leaf** buf, int i, int j)
-{
-	leaf* var = buf[i];
-	buf[i] = buf[j];
-	buf[j] = var;
-}
-*/
-
 int compare_count(leaf* a, leaf* b)
-{
+{	
+	 /**********************\
+	|    Compare by count    |
+	 \**********************/	
 	if(a->count < b->count)	
 		return 1;
 	else
 		return 0;
 }
-
-/*
-void qsortt(leaf** buf, int low, int high)
-{
-	int last;
-
-	if(low >= high)
-		return;
-
-	swapp(buf, (low + high) / 2, low);
-	last = low;
-
-	for(int i = low + 1; i <= high; i++){
-		if(buf[i]->count < buf[low]->count){
-	   		swapp(buf, ++last, i);	
-		}
-	}
-	swapp(buf, low, last);
-	qsortt(buf, low, last - 1);
-	qsortt(buf, last + 1, high);
-}
-*/

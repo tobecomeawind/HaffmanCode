@@ -1,6 +1,38 @@
-#include "haff.h"
-#include "tree.h"
-#include "decode.h"
+/********************************************************
+ *                                                      *
+ *                     Haffman Code                     *
+ *                                                      *
+ *                                                      *
+ *                                                      *
+ * Purpose:                                             *
+ *                                                      *
+ *        Coding and Decoding data from input file      *
+ *        			with Haffman Code                   *
+ *                                                      *
+ *                                                      *
+ * Author: tobecomeawind                                *
+ *                                                      *
+ *                                                      *
+ * Copyright 2024 by tobecomeawind.                     *
+ *                                                      *
+ *                                                      *
+ * Warning:                                             *
+ * 		1. Not use Windows                              *
+ * 		2. Max deep of three code <= 32                 *
+ *                                                      *
+ * Algorithms:                                          *
+ * 			All algorithms you can see                  *
+ * 			 in  algs.c file                            *
+ *                                                      *
+ *                                                      *
+ * Input  : ./main <input_file>                         *
+ * Output :        <example.txt>                        *
+ *                                                      *
+ ********************************************************/
+
+#include "analyzer.h"
+#include "encoder.h"
+#include "decoder.h"
 #include <sys/stat.h>
 
 #include <stdio.h>
@@ -8,8 +40,6 @@
 
 int main(int argc, char *argv[])
 {
-	void binary_view(char* filename);
-
 	char *filename;
 	leaf** buf;
 	leaf_buf* bp;
@@ -30,15 +60,28 @@ int main(int argc, char *argv[])
 	buf  = bp->buf;
 
 	top = create_tree(buf, size);
-	
+
+	if(!top){
+		printf("\n--Not enough data to encoding--\n\n");
+		return -2;
+	}
+
 	create_table(top, 0, 0);
 	print_table(buf, size);
-	encode(filename, top, buf, size);
+	encode(filename, top, buf, size); //encoding info
 
-	decode("example.txt");
+	decode("example.txt"); //decoding info
 	
-	destruct_tree(top);	
+	destruct_tree(top);	   //free alloced memory
 
+
+	/********************************
+	*********************************
+	*****  If u not have linux  *****
+	***** programm not  working *****
+   	*****    (system calls)     *****
+	*********************************
+	*********************************/
 	stat(filename,      &fi);	
 	stat("example.txt", &fo);	
 	

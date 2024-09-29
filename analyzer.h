@@ -2,17 +2,17 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#ifndef HAFF_H
-#define HAFF_H
+#ifndef ANAL_H
+#define ANAL_H
 typedef struct { 
 
-	char letter; //буква
-	unsigned int count; //количество    
+	char letter;
+	unsigned int count; // count in text  
 	
 	int lcode;//len code
 	uint32_t code;	
 
-} leaf; //лист дерева
+} leaf; // tree leaf
 
 typedef struct {
 
