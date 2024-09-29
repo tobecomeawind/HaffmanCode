@@ -7,7 +7,7 @@
  * Purpose:                                             *
  *                                                      *
  *        Coding and Decoding data from input file      *
- *        			with Haffman Code                   *
+ *                  with Haffman Code                   *
  *                                                      *
  *                                                      *
  * Author: tobecomeawind                                *
@@ -17,16 +17,16 @@
  *                                                      *
  *                                                      *
  * Warning:                                             *
- * 		1. Not use Windows                              *
- * 		2. Max deep of three code <= 32                 *
+ *      1. Not use Windows                              *
+ *      2. Max deep of three code <= 32                 *
  *                                                      *
  * Algorithms:                                          *
- * 			All algorithms you can see                  *
- * 			 in  algs.c file                            *
+ *          All algorithms you can see                  *
+ *           in  algs.c file                            *
  *                                                      *
  *                                                      *
  * Input  : ./main <input_file>                         *
- * Output :        <result.txt>                        *
+ * Output :        <result.txt>                         *
  *                                                      *
  ********************************************************/
 
@@ -40,7 +40,8 @@
 
 int main(int argc, char *argv[])
 {
-	char *filename;
+	char*  finput;
+	char* foutput;
 	leaf** buf;
 	leaf_buf* bp;
 	node* top;
@@ -48,14 +49,22 @@ int main(int argc, char *argv[])
 	long int fisize, fosize;//input file size, output file size
 	struct stat fi, fo;
 
-	if(argc == 2)
-		filename = *++argv;
-	else{
-		printf("\n --Invalid argument!-- \n\n");
+	if(argc == 3){
+		finput  = *++argv;
+		foutput = *++argv;	
+	}else{
+		printf("\n --Invalid argument!-- \n");
+		printf("Try to: ./name_of_programm <input_file> <otput_file>\n\n");
 		return -1;	
 	}
 	
-	bp   = analyze_file(filename);	
+	bp   = analyze_file(finput);	
+	
+	if(!bp){
+		printf("\n --The input file not opening or not exist-- \n\n");	
+		return -1;
+	}
+	
 	size = bp->size;
 	buf  = bp->buf;
 
@@ -68,9 +77,9 @@ int main(int argc, char *argv[])
 
 	create_table(top, 0, 0);
 	print_table(buf, size);
-	encode(filename, top, buf, size); //encoding info
+	encode(finput, foutput, top, buf, size); //encoding info
 
-	decode("result.txt"); //decoding info
+	decode(foutput); //decoding info
 	
 	destruct_tree(top);	   //free alloced memory
 
@@ -82,8 +91,8 @@ int main(int argc, char *argv[])
    	*****    (system calls)     *****
 	*********************************
 	*********************************/
-	stat(filename,      &fi);	
-	stat("result.txt", &fo);	
+	stat(finput,  &fi);	
+	stat(foutput, &fo);	
 	
 	fisize = fi.st_size;
 	fosize = fo.st_size;

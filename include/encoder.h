@@ -30,6 +30,6 @@ int   compare_alph (leaf* , leaf*);
 void  create_table (node* , int   , uint32_t);
 node* init_node    (leaf* , node* , node*);
 node* create_tree  (leaf**, int);
-void  encode       (char* , node* , leaf**, int);
+void  encode       (char* , char* , node* , leaf**, int);
 void  destruct_tree(node*);
 #endif

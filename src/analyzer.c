@@ -35,6 +35,9 @@ leaf_buf* analyze_file(char name[])
 
 	fp = fopen(name, "r");
 
+	if(!fp) // input file not opening
+		return NULL;
+
 	lbuf = (leaf**) malloc(sizeof(leaf*));
 	
 	lbuf = bufalloc(lbuf, &sizebuf);	

@@ -175,7 +175,7 @@ void create_table(node* head, int len, uint32_t code)
 }
 
 
-void encode(char* filename, node* head, leaf** buf, int size)
+void encode(char* input, char* output, node* head, leaf** buf, int size)
 {	
  	/****************************\
    |        Encoding file         |
@@ -197,11 +197,11 @@ void encode(char* filename, node* head, leaf** buf, int size)
 	qsortt(buf, 0 , size - 1, func);	
 	
 	//writing a haffman tree in file
-	tencode("result.txt", head);
+	tencode(output, head);
 
-	fp  = fopen(filename,      "rb");
-	nfp = fopen("result.txt", "awb");	//go to end, because tree already encoded in file
-										//and if just open in "wb" tree will broken
+	fp  = fopen(input,   "rb");
+	nfp = fopen(output, "awb");	//go to end, because tree already encoded in file
+								//and if just open in "wb" tree will broken
 	//writing a main encoded data in file	
 	fencode(fp, nfp, buf, size);
 
